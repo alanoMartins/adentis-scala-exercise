@@ -1,0 +1,1 @@
+# adentis-scala-exercise
