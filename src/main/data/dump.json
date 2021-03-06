@@ -1,0 +1,56 @@
+[
+  {
+    "customName": "Alano",
+    "address": "Casa",
+    "date": "2020-05-01",
+    "itens": [
+      {
+        "cost": 10.1,
+        "fee": 10.6,
+        "tax": 20,
+        "product": {
+          "name": "P1",
+          "category": "C1",
+          "price": 10,
+          "creation": "2020-05-01"
+        }
+      }
+    ]
+  },
+  {
+    "customName": "Outro",
+    "address": "Casa 2",
+    "date": "2020-05-04",
+    "itens": [
+      {
+        "cost": 10.1,
+        "fee": 10.6,
+        "tax": 20,
+        "product": {
+          "name": "P1",
+          "category": "C1",
+          "price": 10,
+          "creation": "2020-05-03"
+        }
+      }
+    ]
+  },
+  {
+    "customName": "Alano M",
+    "address": "Casa1",
+    "date": "1900-01-02",
+    "itens": [
+      {
+        "cost": 12.1,
+        "fee": 12.6,
+        "tax": 22,
+        "product": {
+          "name": "P1",
+          "category": "C1",
+          "price": 11,
+          "creation": "1900-02-02"
+        }
+      }
+    ]
+  }
+]
