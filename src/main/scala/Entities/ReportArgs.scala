@@ -34,11 +34,11 @@ object ReportArgs {
         }
       case i: String if i.contains(">") =>
         interval.split(">") match {
-          case Array(_, end) => IntervalReport(None, Some(Integer.parseInt(end)))
+          case Array(_, init) => IntervalReport(Some(Integer.parseInt(init)), None)
         }
       case i: String if i.contains("<") =>
         interval.split("<") match {
-          case Array(_, init) => IntervalReport(Some(Integer.parseInt(init)), None)
+          case Array(_, end) => IntervalReport(None, Some(Integer.parseInt(end)))
         }
       case _ => throw new IllegalArgumentException("Parse error")
     }

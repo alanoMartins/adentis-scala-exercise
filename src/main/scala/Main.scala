@@ -13,22 +13,18 @@ import scala.concurrent.duration.Duration
 
 object Main {
 
-  val usage = """
-    Usage: initial date [-i num] [-e num]
-  """
-
   def main(args: Array[String]): Unit = {
     val t0 = System.nanoTime()
     val reportArgs: ReportArgs = ReportArgs.fromArgs(args.toList)
     println("---------- Generate orders ------------")
-    val reportsFuture = Generator.orders(10000, 10).flatMap{
+    val reportsFuture = Generator.orders(100000, 10).flatMap{
       orders => {
-        Future.sequence(Seq(OrderReport.reportOrders(orders, reportArgs), OrderReport.reportProduct(orders, reportArgs)))
+        Future.sequence(Seq(OrderReport.reportsOrder(orders, reportArgs, "order"), OrderReport.reportsOrder(orders, reportArgs, "product")))
       }
     }
 
     // Explain on presentation
-    val reports = Await.result(reportsFuture, Duration("200 secs"))
+    val reports = Await.result(reportsFuture, Duration("20 secs"))
 
     println("---------- Report orders ------------")
     reports(0).foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2)   }

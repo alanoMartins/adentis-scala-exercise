@@ -1,6 +1,6 @@
 package Simulator
 
-object ContactGenerator extends GeneratorBase[String] {
+object ContactGenerator extends BatchGenerator[String] {
 
-  override def data: Seq[String] = NameGenerator.data.map(_ + "@gmail.com")
+  override val data: Seq[String] = NameGenerator.data.map(_ + "@gmail.com")
 }

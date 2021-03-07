@@ -1,5 +1,5 @@
 package Simulator
 
-object CategoryGenerator extends GeneratorBase[String] {
-  override def data: Seq[String] = Seq("food", "higene", "electronics")
+object CategoryGenerator extends BatchGenerator[String] {
+  override val data: Seq[String] = Seq("food", "higene", "electronics")
 }

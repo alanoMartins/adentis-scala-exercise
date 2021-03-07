@@ -1,42 +1,43 @@
 package Report
 
-import Entities.{IntervalReport, Order, ReportArgs}
+import Entities.{IntervalReport, Item, Order, ReportArgs}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 object OrderReport {
-  def calcMonths(localDate: LocalDate): Int = {
-    (LocalDate.now().getYear - localDate.getYear) * 12 + localDate.getMonthValue
+
+  private def oldestProductInOrder = (order: Order) => {
+    order.items.foldLeft(LocalDate.now())((older,r) => {
+      if(r.product.creation.isBefore(older)) r.product.creation else older
+    })}
+
+  private def ageInMonths(created: LocalDate, shippedDate: LocalDate): Int = {
+    (shippedDate.getYear - created.getYear) * 12 + created.getMonthValue
   }
 
-  def inInterval(date: LocalDate, intervalReport: Set[IntervalReport]): Set[IntervalReport] = {
+  private def inInterval(ageInMonths: Int, intervalReport: Set[IntervalReport]): Set[IntervalReport] = {
     intervalReport.filter{ interval =>
-      interval.initial.getOrElse(0) <= calcMonths(date) && interval.end.getOrElse(Int.MaxValue) >= calcMonths(date)
+      interval.initial.getOrElse(0) <= ageInMonths && interval.end.getOrElse(Int.MaxValue) >= ageInMonths
     }
   }
 
-
-  def reportOrders(orders: Seq[Order], reportArgs: ReportArgs) = Future {
-    def oldestProductInOrder = (order: Order) => {
-      order.items.foldLeft(LocalDate.now())((older,r) => {
-        if(r.product.creation.isBefore(older)) r.product.creation else older
-      })}
-
+  private def reportOrderCurried(orders: Seq[Order], reportArgs: ReportArgs)(operation: Order => Set[IntervalReport]) = {
     orders.filter { o =>
       o.datePlaced.isAfter(reportArgs.initial) && o.datePlaced.isBefore(reportArgs.end)
-    } .groupBy { order =>
-      inInterval(oldestProductInOrder(order), reportArgs.intervals) }
+    } .groupBy { operation }
   }
 
-  def reportProduct(orders: Seq[Order], reportArgs: ReportArgs) = Future {
-    val filterOrders = orders.filter(o => o.datePlaced.isAfter(reportArgs.initial) && o.datePlaced.isBefore(reportArgs.end))
-    filterOrders.flatMap(x => x.items).groupBy(ps => inInterval(ps.product.creation, reportArgs.intervals))
-
+  def reportsOrder(orders: Seq[Order], reportArgs: ReportArgs, agg: String) = Future {
+    val reportGen = reportOrderCurried(orders, reportArgs) _
+    agg match {
+      case "order" => reportGen(order => inInterval(ageInMonths(oldestProductInOrder(order), order.datePlaced), reportArgs.intervals))
+      case "product" => reportGen(order => order.items.map(ps =>inInterval(ageInMonths(ps.product.creation, order.datePlaced), reportArgs.intervals)).flatten)
+    }
   }
 
-  def printResult[T1, T](intervals: Set[T1], orders: Seq[T]) = {
+  def printResult(intervals: Set[IntervalReport], orders: Seq[Order]) = {
     val intervalString = intervals.size match {
       case 0 => "Uncategorized"
       case _ => intervals.map(_.toString).reduce(_ + " and " +  _)
