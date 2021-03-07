@@ -21,7 +21,7 @@ object Main {
     val t0 = System.nanoTime()
     val reportArgs: ReportArgs = ReportArgs.fromArgs(args.toList)
     println("---------- Generate orders ------------")
-    val reportsFuture = Generator.orders(1000, 10).flatMap{
+    val reportsFuture = Generator.orders(10000, 10).flatMap{
       orders => {
         Future.sequence(Seq(OrderReport.reportOrders(orders, reportArgs), OrderReport.reportProduct(orders, reportArgs)))
       }

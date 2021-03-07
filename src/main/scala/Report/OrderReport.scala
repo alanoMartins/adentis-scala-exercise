@@ -36,20 +36,6 @@ object OrderReport {
 
   }
 
-
-  def printOrders(orders: Seq[Order], reportArgs: ReportArgs) ={
-    reportOrders(orders, reportArgs)
-      .foreach { result =>
-        result.foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2) }
-      }
-
-  }
-
-  def printProduct(orders: Seq[Order], reportArgs: ReportArgs) ={
-    reportProduct(orders, reportArgs)
-      .foreach { result => result.foreach { mapOrder => printResult(mapOrder._1, mapOrder._2)}}
-  }
-
   def printResult[T1, T](intervals: Set[T1], orders: Seq[T]) = {
     val intervalString = intervals.size match {
       case 0 => "Uncategorized"

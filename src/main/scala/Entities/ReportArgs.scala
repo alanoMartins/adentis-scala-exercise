@@ -10,6 +10,7 @@ case class IntervalReport(initial: Option[Int], end: Option[Int]) {
 }
 
 case class ReportArgs(initial: LocalDate, end: LocalDate, intervals: Set[IntervalReport])
+
 object ReportArgs {
   def fromArgs(args: List[String]): ReportArgs = {
     require(ArgumentsValidator validate args)
