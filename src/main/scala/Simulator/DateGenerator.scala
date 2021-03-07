@@ -1,20 +1,22 @@
 package Simulator
 
 import java.time.LocalDate
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
+import java.util.concurrent.ThreadLocalRandom
 
-object DateGanerator {
+object DateGenerator {
 
   def date: LocalDate = {
-    import java.time.LocalDate
-    import java.util.concurrent.ThreadLocalRandom
     val minDay = LocalDate.of(2000, 1, 1).toEpochDay
     val maxDay = LocalDate.of(2020, 12, 31).toEpochDay
     val randomDay = ThreadLocalRandom.current.nextLong(minDay, maxDay)
-    val randomDate = LocalDate.ofEpochDay(randomDay)
-    return randomDate
+    LocalDate.ofEpochDay(randomDay)
+
   }
 
-  def sample(freq: Int): Seq[LocalDate] = {
+  def sample(freq: Int): Future[Seq[LocalDate]] = Future {
     for (_ <- 0 until freq)  yield date
   }
+
 }

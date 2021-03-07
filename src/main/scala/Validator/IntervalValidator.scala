@@ -3,6 +3,7 @@ package Validator
 import scala.util.Try
 
 object IntervalValidator {
+
   def validate(interval: String): Boolean = {
     if(!validatorSize(interval)) throw new IllegalArgumentException(s"Parameter $interval with wrong size")
     if(!validatorType(interval)) throw new IllegalArgumentException(s"Parameter $interval with wrong type")
