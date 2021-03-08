@@ -29,7 +29,7 @@ The date format must be:
 
 ## Order Generator Diagram
 
-![Generator order image](https://github.com/alanomartins/[reponame]/blob/[branch]/image.jpg?raw=true)
+![Generator order image](https://raw.githubusercontent.com/alanoMartins/adentis-scala-exercise/main/docs/Order%20Generator%20Flow.jpeg)
 
 
     
