@@ -5,33 +5,39 @@ import Report.OrderReport
 import Report.OrderReport.printResult
 import Simulator.Generator
 
-import scala.concurrent.{Await, Future}
+import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.Duration
+import scala.sys.exit
 
 
 
 object Main {
 
+  val usage =
+    """
+      | Usage java -jar <exec.jar> [Initial Data] [End Data]
+      | --type [Order|Product] => Report type
+      | --sample 1000 => Amount of orders to generate
+      | --interval "<1,1-3,4-6,7-9,10-12,>12" String separated by comman => Interval to classify orders
+      |""".stripMargin
+
   def main(args: Array[String]): Unit = {
-    val t0 = System.nanoTime()
-    val reportArgs: ReportArgs = ReportArgs.fromArgs(args.toList)
-    println("---------- Generate orders ------------")
-    val reportsFuture = Generator.orders(100000, 10).flatMap{
-      orders => {
-        Future.sequence(Seq(OrderReport.reportsOrder(orders, reportArgs, "order"), OrderReport.reportsOrder(orders, reportArgs, "product")))
+//    println(usage)
+    val start = System.nanoTime()
+
+    try {
+      val reportArgs: ReportArgs = ReportArgs.fromArgs(args.toList)
+      generateReport(reportArgs)
+    }
+    catch { case e: IllegalArgumentException => {
+      println(e.getMessage)
+      print(usage)
       }
     }
 
-    // Explain on presentation
-    val reports = Await.result(reportsFuture, Duration("20 secs"))
-
-    println("---------- Report orders ------------")
-    reports(0).foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2)   }
-    println("---------- Report product ------------")
-    reports(1).foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2)   }
-    val t1 = System.nanoTime()
-    println("Elapsed time: " + (t1 - t0) / Math.pow(10, 9) + "ns")
+    val end = System.nanoTime()
+    println("Elapsed time: " + (end - start) / Math.pow(10, 9) + "s")
   }
 
   def ordersFromJson(filename: String): Set[Order] = {
@@ -40,5 +46,18 @@ object Main {
     val lines = try source.mkString finally source.close()
     val json = lines.parseJson
     json.convertTo[Set[Order]]
+  }
+
+  def generateReport(reportArgs: ReportArgs) = {
+    println("---------- Generate orders ------------")
+    val reportsFuture = Generator.orders(reportArgs.generator).flatMap{
+      orders => OrderReport.reportsOrder(orders, reportArgs)
+    }
+
+    // Explain on presentation
+    val reports = Await.result(reportsFuture, Duration("20 secs"))
+
+    println("---------- Generate Report ------------")
+    reports.foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2)   }
   }
 }

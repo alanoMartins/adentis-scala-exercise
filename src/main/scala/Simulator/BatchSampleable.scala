@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.Random
 
-trait BatchGenerator[T]  extends GeneratorBase[T] {
+trait BatchSampleable[T]  extends Sampleable[T] {
   val data: Seq[T]
 
 

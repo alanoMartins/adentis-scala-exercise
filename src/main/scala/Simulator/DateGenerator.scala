@@ -3,7 +3,7 @@ package Simulator
 import java.time.LocalDate
 import java.util.concurrent.ThreadLocalRandom
 
-object DateGenerator extends OnlineGenerator [LocalDate]{
+object DateGenerator extends OnlineSampleable [LocalDate]{
 
   override def data(min: Option[LocalDate], max: Option[LocalDate]): LocalDate = {
     (min, max) match {
@@ -14,7 +14,7 @@ object DateGenerator extends OnlineGenerator [LocalDate]{
         LocalDate.ofEpochDay(randomDay)
       }
       case (Some(min), Some(max)) => {
-        val randomDay = ThreadLocalRandom.current().nextLong(min.toEpochDay, max.toEpochDay)
+        val randomDay = ThreadLocalRandom.current().nextLong(min.toEpochDay, max.toEpochDay + 1)
         LocalDate.ofEpochDay(randomDay)
       }
       case _ => throw new IllegalArgumentException("Should pass a valid max and min limits")

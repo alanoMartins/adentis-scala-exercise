@@ -2,7 +2,7 @@ package Simulator
 
 import scala.concurrent.Future
 
-trait GeneratorBase[T] {
+trait Sampleable[T] {
   def sample(freq: Int): Future[Seq[T]]
 }
 

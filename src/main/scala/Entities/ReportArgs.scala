@@ -8,20 +8,37 @@ import java.time.format.DateTimeFormatter
 case class IntervalReport(initial: Option[Int], end: Option[Int]) {
   override def toString: String = s"Months ${initial.getOrElse("Begin")} - ${end.getOrElse("end")}"
 }
-
-case class ReportArgs(initial: LocalDate, end: LocalDate, intervals: Set[IntervalReport])
+case class GeneratorArgs(sample:Int, from: LocalDate, to:LocalDate)
+case class ReportArgs(initial: LocalDate, end: LocalDate, intervals: Set[IntervalReport], generator:GeneratorArgs, reportType: String)
 
 object ReportArgs {
+
+  type ArgOptions = Map[String, String]
+
+  def nextOption(map : ArgOptions, list: List[String]) : ArgOptions = {
+    list match {
+      case Nil => map
+      case "--type" :: value :: tail => nextOption(map ++ Map("type" -> value), tail)
+      case "--sample" :: value :: tail => nextOption(map ++ Map("sample" -> value), tail)
+      case "--interval" :: value :: tail => nextOption(map ++ Map("interval" -> value), tail)
+      case "--from" :: value :: tail => nextOption(map ++ Map("from" -> value), tail)
+      case "--to" :: value :: tail => nextOption(map ++ Map("to" -> value), tail)
+      case option :: tail => throw  new IllegalArgumentException("Unknown option " + option)
+    }
+  }
+
   def fromArgs(args: List[String]): ReportArgs = {
-    require(ArgumentsValidator validate args)
+    require(ArgumentsValidator validate args, "Read the docs, please! =) ")
     val initialParam = dateParse(args(0))
     val endParam = dateParse(args(1))
-    val intervals = args.drop(2) match {
-      case inter: Seq[String] if inter.isEmpty => Set(intervalParser("1-3"), intervalParser("4-6"), intervalParser("7-12"))
-      case inter: Seq[String] => inter.map(intervalParser).toSet
-    }
+    val namedArgs = nextOption(Map(),args.drop(2))
+    val reportType = namedArgs.getOrElse("type", "order")
+    val intervals = namedArgs.getOrElse("interval", "1-3,4-6,7-9,10-12, <1,>12").trim.split(',').map(intervalParser).toSet
+    val sample = namedArgs.getOrElse("sample", "100").toInt
+    val fromGenerator = dateParse(namedArgs.getOrElse("from", "2018-01-01 00:00:00"))
+    val toGenerator = dateParse(namedArgs.getOrElse("to", "2019-01-01 00:00:00"))
 
-    ReportArgs(initialParam, endParam, intervals)
+    ReportArgs(initialParam, endParam, intervals, GeneratorArgs(sample, fromGenerator, toGenerator), reportType)
 
   }
 

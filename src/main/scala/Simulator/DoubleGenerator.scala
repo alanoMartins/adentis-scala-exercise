@@ -2,7 +2,7 @@ package Simulator
 
 import java.util.concurrent.ThreadLocalRandom
 
-object DoubleGenerator extends  OnlineGenerator[Double] {
+object DoubleGenerator extends  OnlineSampleable[Double] {
 
   override def data(min: Option[Double], max: Option[Double]): Double = {
     (min, max) match {

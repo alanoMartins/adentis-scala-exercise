@@ -1,7 +1,7 @@
 package Simulator
 
 
-object NameGenerator extends BatchGenerator[String] {
+object NameGenerator extends BatchSampleable[String] {
   override val data: Seq[String] = Seq("Emma", "Olivia", "Ava", "Isabella", "Sophia", "Charlotte", "Mia", "Amelia",
     "Harper", "Evelyn", "Abigail", "Emily", "Elizabeth", "Mila", "Ella", "Avery", "Sofia", "Camila", "Aria", "Scarlett",
     "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora", "Lily", "Eleanor",

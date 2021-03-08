@@ -3,7 +3,7 @@ package Simulator
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-trait OnlineGenerator[T] extends GeneratorBase[T] {
+trait OnlineSampleable[T] extends Sampleable[T] {
   def data(min: Option[T] = None, max: Option[T] = None): T
 
 

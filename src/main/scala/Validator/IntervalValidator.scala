@@ -2,16 +2,16 @@ package Validator
 
 import scala.util.Try
 
-object IntervalValidator {
+object IntervalValidator extends BaseValidator[String] {
 
-  def validate(interval: String): Boolean = {
+  override def validate(interval: String): Boolean = {
     if(!validatorSize(interval)) throw new IllegalArgumentException(s"Parameter $interval with wrong size")
     if(!validatorType(interval)) throw new IllegalArgumentException(s"Parameter $interval with wrong type")
     if(!validatorOrder(interval)) throw new IllegalArgumentException(s"Parameter $interval with wrong order")
     true
   }
 
-  def validatorSize(interval: String): Boolean = {
+  private def validatorSize(interval: String): Boolean = {
     interval match {
       case i: String if i.contains("-") => interval.split("-").length == 2
       case i: String if i.contains(">") => interval.split(">").length == 2
@@ -20,7 +20,7 @@ object IntervalValidator {
     }
   }
 
-  def validatorType(interval: String): Boolean = {
+  private def validatorType(interval: String): Boolean = {
     def validNumber(value: String):Boolean = {
       Try(value.toInt).isSuccess && value.toInt <= Int.MaxValue
     }
@@ -32,15 +32,15 @@ object IntervalValidator {
     }
   }
 
-  def validatorOrder(interval: String): Boolean = {
+  private def validatorOrder(interval: String): Boolean = {
     interval match {
       case i: String if i.contains("-") =>
         interval.split("-") match {
           case Array(init, end) => init.toInt < end.toInt
           case _ => throw new IllegalArgumentException("Parameter format is incorrect")
         }
-      case i: String if i.contains(">") => i.startsWith(">")
-      case i: String if i.contains("<") => i.startsWith("<")
+      case i: String if i.contains(">") => i.trim.startsWith(">")
+      case i: String if i.contains("<") => i.trim.startsWith("<")
       case _ => throw new IllegalArgumentException("Parameter format is incorrect")
     }
   }

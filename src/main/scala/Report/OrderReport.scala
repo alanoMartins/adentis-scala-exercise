@@ -1,6 +1,6 @@
 package Report
 
-import Entities.{IntervalReport, Item, Order, ReportArgs}
+import Entities.{IntervalReport, Order, ReportArgs}
 
 import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -13,11 +13,11 @@ object OrderReport {
       if(r.product.creation.isBefore(older)) r.product.creation else older
     })}
 
-  private def ageInMonths(created: LocalDate, shippedDate: LocalDate): Int = {
+  private def ageInMonths(created: LocalDate, shippedDate: LocalDate) = {
     (shippedDate.getYear - created.getYear) * 12 + created.getMonthValue
   }
 
-  private def inInterval(ageInMonths: Int, intervalReport: Set[IntervalReport]): Set[IntervalReport] = {
+  private def inInterval(ageInMonths: Int, intervalReport: Set[IntervalReport]) = {
     intervalReport.filter{ interval =>
       interval.initial.getOrElse(0) <= ageInMonths && interval.end.getOrElse(Int.MaxValue) >= ageInMonths
     }
@@ -29,15 +29,16 @@ object OrderReport {
     } .groupBy { operation }
   }
 
-  def reportsOrder(orders: Seq[Order], reportArgs: ReportArgs, agg: String) = Future {
+  def reportsOrder(orders: Seq[Order], reportArgs: ReportArgs): Future[Map[Set[IntervalReport], Seq[Order]]] = Future {
     val reportGen = reportOrderCurried(orders, reportArgs) _
-    agg match {
+    reportArgs.reportType match {
       case "order" => reportGen(order => inInterval(ageInMonths(oldestProductInOrder(order), order.datePlaced), reportArgs.intervals))
-      case "product" => reportGen(order => order.items.map(ps =>inInterval(ageInMonths(ps.product.creation, order.datePlaced), reportArgs.intervals)).flatten)
+      case "product" => reportGen(order => order.items.map(item =>inInterval(ageInMonths(item.product.creation, order.datePlaced), reportArgs.intervals)).flatten)
+      case nameReport => throw new IllegalArgumentException(s"There is $nameReport report ")
     }
   }
 
-  def printResult(intervals: Set[IntervalReport], orders: Seq[Order]) = {
+  def printResult(intervals: Set[IntervalReport], orders: Seq[Order]): Unit = {
     val intervalString = intervals.size match {
       case 0 => "Uncategorized"
       case _ => intervals.map(_.toString).reduce(_ + " and " +  _)
