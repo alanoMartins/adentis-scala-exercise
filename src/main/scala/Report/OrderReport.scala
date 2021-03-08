@@ -14,7 +14,7 @@ object OrderReport {
     })}
 
   private def ageInMonths(created: LocalDate, shippedDate: LocalDate) = {
-    (shippedDate.getYear - created.getYear) * 12 + created.getMonthValue
+    (shippedDate.getYear - created.getYear) * 12 + (shippedDate.getMonthValue - created.getMonthValue)
   }
 
   private def inInterval(ageInMonths: Int, intervalReport: Set[IntervalReport]) = {
@@ -45,6 +45,6 @@ object OrderReport {
     }
     val total = orders.length
 
-    println(s"$intervalString : $total")
+    println(s"$intervalString : $total orders")
   }
 }
