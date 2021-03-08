@@ -53,7 +53,7 @@ object Main {
     }
 
     // Explain on presentation
-    val reports = Await.result(reportsFuture, Duration("20 secs"))
+    val reports = Await.result(reportsFuture, Duration("300 secs"))
 
     println("---------- Generate Report ------------")
     reports.foreach { mapOrder =>printResult(mapOrder._1, mapOrder._2)   }
