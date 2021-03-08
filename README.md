@@ -27,7 +27,9 @@ The date format must be:
 > yyyy-MM-dd hh:mm:ss   
 > eg: "2019-01-01 00:00:00"
 
+## Order Generator Diagram
 
+![Generator order image](https://github.com/alanomartins/[reponame]/blob/[branch]/image.jpg?raw=true)
 
 
     
