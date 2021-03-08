@@ -33,7 +33,7 @@ object OrderReport {
     val reportGen = reportOrderCurried(orders, reportArgs) _
     reportArgs.reportType match {
       case "order" => reportGen(order => inInterval(ageInMonths(oldestProductInOrder(order), order.datePlaced), reportArgs.intervals))
-      case "product" => reportGen(order => order.items.map(item =>inInterval(ageInMonths(item.product.creation, order.datePlaced), reportArgs.intervals)).flatten)
+      case "product" => reportGen(order => order.items.flatMap(item =>inInterval(ageInMonths(item.product.creation, order.datePlaced), reportArgs.intervals)))
       case nameReport => throw new IllegalArgumentException(s"There is $nameReport report ")
     }
   }

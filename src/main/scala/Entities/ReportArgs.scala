@@ -23,7 +23,7 @@ object ReportArgs {
       case "--interval" :: value :: tail => nextOption(map ++ Map("interval" -> value), tail)
       case "--from" :: value :: tail => nextOption(map ++ Map("from" -> value), tail)
       case "--to" :: value :: tail => nextOption(map ++ Map("to" -> value), tail)
-      case option :: tail => throw  new IllegalArgumentException("Unknown option " + option)
+      case option :: _ => throw  new IllegalArgumentException(s"Unknown argument $option")
     }
   }
 

@@ -21,17 +21,16 @@ object Main {
       |""".stripMargin
 
   def main(args: Array[String]): Unit = {
-//    println(usage)
     val start = System.nanoTime()
 
     try {
       val reportArgs: ReportArgs = ReportArgs.fromArgs(args.toList)
       generateReport(reportArgs)
     }
-    catch { case e: IllegalArgumentException => {
+    catch { case e: IllegalArgumentException =>
       println(e.getMessage)
       print(usage)
-      }
+
     }
 
     val end = System.nanoTime()
@@ -46,7 +45,7 @@ object Main {
     json.convertTo[Set[Order]]
   }
 
-  def generateReport(reportArgs: ReportArgs) = {
+  def generateReport(reportArgs: ReportArgs): Unit = {
     println("---------- Generate orders ------------")
     val reportsFuture = Generator.orders(reportArgs.generator).flatMap{
       orders => OrderReport.reportsOrder(orders, reportArgs)
