@@ -2,6 +2,12 @@
 
 > This project is a challange provider by Adentis. It's only for educational propose
 
+## Requiriments
+This project was created using the follow version of scala and sbt
+> scalaVersion = 2.13.5
+> 
+> sbt.version = 1.4.7
+
 ## How to build
 The follow code will create a build/ folder with a .jar file inside
 ``` shell

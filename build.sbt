@@ -1,6 +1,6 @@
 name := "adentis_challenge_sbt"
 
-version := "0.1"
+version := "1.0"
 
 scalaVersion := "2.13.5"
 
